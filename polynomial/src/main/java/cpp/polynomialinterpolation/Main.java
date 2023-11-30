@@ -38,6 +38,7 @@ public class Main {
                 printLeftTopHalf(differenceTable);
                 System.out.println();
 
+                printNewtonPolynomial(newtonCoefficients, xValues);
                 // System.out.println("\n Newton's Form Polynomial: ");
                 // printNewtonPolynomial();
 
@@ -58,8 +59,6 @@ public class Main {
         }
 
     }
-
-    
 
     private static void printMatrix(double[][] matrix) 
     {
@@ -130,6 +129,23 @@ public class Main {
         return table;
     }
 
+    private static void printNewtonPolynomial(double[] Co, double[] Xs)
+    {
+        int n = Xs.length;
+        System.out.print("N(x) = ");
+        for (int i = 0; i < n; i++) 
+        {
+            System.out.print( String.format("%.6f", Co[i]) );
+            
+            for(int j=0; j<=i-1; j++)
+                System.out.print(" * (x - " + String.format("%.6f", Xs[j]) + ")");
+
+            if(i < n-1)
+                System.out.print(" + ");
+        }
+        System.out.println();
+
+    }
     
 
     
