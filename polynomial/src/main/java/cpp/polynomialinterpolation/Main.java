@@ -30,22 +30,22 @@ public class Main {
                 double[] fxValues = data[1];
                 double[][] differenceTable = dividedDifferenceTable(xValues, fxValues);
 
-                double[] newtonCoefficients = Arrays.copyOf(differenceTable[0], differenceTable[0].length);
-                
-                System.out.println();
+                System.out.println("Unformated Table: ");
                 printMatrix(differenceTable);
-                System.out.println();
+                System.out.println("\nUpper Triangle Form:");
                 printLeftTopHalf(differenceTable);
+
+                System.out.println("\n Newton's Form Polynomial: ");
+                printNewtonInterpolatingPolynomial(xValues, differenceTable);
                 System.out.println();
 
-                // System.out.println("\n Newton's Form Polynomial: ");
-                // printNewtonPolynomial();
+                System.out.println("\n Lagrange's Form Polynomial: ");
+                printLagrangeInterpolationFormula(xValues, differenceTable);
+                System.out.println();
 
-                // System.out.println("\n Lagrange's Form Polynomial: ");
-                // printLagrangePolynomial();
-
-                // System.out.println("\n Simplified Polynomial: ");
-                // printSimplifiedPolynomial();
+                System.out.println("\n Simplified Polynomial: ");
+                printSimplifiedPolynomial(xValues, differenceTable);
+                System.out.println();
 
             }
 
@@ -58,8 +58,6 @@ public class Main {
         }
 
     }
-
-    
 
     private static void printMatrix(double[][] matrix) 
     {
@@ -130,9 +128,71 @@ public class Main {
         return table;
     }
 
-    
+    public static void printNewtonInterpolatingPolynomial(double[] xValues, double[][] dividedDifferenceTable)
+    {
+        System.out.print("Newton(x) = ");
+        StringBuilder sb = new StringBuilder();
+        int length = xValues.length;
+        sb.append(String.valueOf(dividedDifferenceTable[0][0]));
 
-    
+        for(int i=1; i<length;i++ )
+        {
+            StringBuilder sbTerm = new StringBuilder();
+            sbTerm.append(" + " + dividedDifferenceTable[0][i]);
+            
+            for (int j = 0; j < i; j++) 
+                sbTerm.append(" * (x - " + xValues[j] + " )" ); 
+
+            sb.append(sbTerm.toString());
+        }
+        System.out.print(sb.toString());
+    }
+
+    private static void printLagrangeInterpolationFormula(double[] xValues, double[][] dividedDifferenceTable)
+    {
+        double[] fxValues = new double[dividedDifferenceTable.length];
+        for (int i = 0; i < fxValues.length; i++)
+            fxValues[i] = dividedDifferenceTable[i][0];    
+        
+        System.out.print("Lagrange(x) = ");
+        for (int i = 0; i < xValues.length; i++) 
+        {
+            double termCoefficient = fxValues[i];
+
+            for (int j = 0; j < xValues.length; j++) 
+                if (j != i) 
+                {
+                    termCoefficient /= (xValues[i] - xValues[j]);
+                    System.out.print("( x - " + xValues[j] + ")");
+                }
+            
+            System.out.print(" * " + termCoefficient);
+
+            if (i < xValues.length - 1) 
+                System.out.print(" + ");
+        }
+
+    }
+
+    private static void printSimplifiedPolynomial(double[] xValues, double[][] dividedDifferenceTable) 
+    {
+        System.out.print("Simple(x) = " + dividedDifferenceTable[0][0]);
+
+        for (int i = 1; i < xValues.length; i++) 
+            System.out.print(" + " + formatSimplifiedTerm(dividedDifferenceTable[0][i], xValues, i));
+
+        System.out.println();
+    }
+
+    private static String formatSimplifiedTerm(double coefficient, double[] xValues, int index) 
+    {
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < index; i++) 
+            result.append("(x - ").append(xValues[i]).append(") ");
+
+        return coefficient == 0 ? "" : coefficient + " * " + result.toString().trim();
+    }
 
 }
 
